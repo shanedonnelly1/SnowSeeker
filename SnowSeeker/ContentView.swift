@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var favourites = Favourites()
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     var body: some View {
         NavigationView {
@@ -28,8 +29,16 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text(resort.name)
                             .font(.headline)
+                        
                         Text("\(resort.runs) runs")
                             .foregroundColor(.secondary)
+                    }
+                    
+                    if self.favourites.contains(resort) {
+                        Spacer()
+                        Image(systemName: "heart.fill")
+                            .accessibility(label: Text("This is a favourite resort"))
+                            .foregroundColor(.red)
                     }
                 }
             }
@@ -37,6 +46,7 @@ struct ContentView: View {
             
             WelcomeView()
         }
+        .environmentObject(favourites)
     }
 }
 
