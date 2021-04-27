@@ -40,7 +40,8 @@ enum ResortFilter: CustomStringConvertible {
 struct ContentView: View {
     @ObservedObject var favourites = Favourites()
     @State private var sort: ResortSort = .standard
-    @State private var filter: ResortFilter = .none
+    @State private var filterType: ResortFilter = .none
+    @State private var filterValue: Int = 0
     
     @State private var showingSortActionSheet = false
     @State private var showingFilterActionSheet = false
@@ -58,13 +59,22 @@ struct ContentView: View {
                 return true
             }
         })
-//        if self.filter != .none {
-//            sortedAndFilteredResorts.filter(<#T##isIncluded: (Resort) throws -> Bool##(Resort) throws -> Bool#>)
-//        }
+        if self.filterType != .none {
+            sortedAndFilteredResorts = sortedAndFilteredResorts.filter {
+                switch self.filterType {
+                case .size:
+                    return $0.size == self.filterValue
+                case .price:
+                    return $0.price == self.filterValue
+                default:
+                    return false
+                }
+            }
+        }
         
         return sortedAndFilteredResorts
     }
-   
+    
     var body: some View {
         NavigationView {
             List(filteredAndSortedResorts) { resort in
@@ -100,16 +110,45 @@ struct ContentView: View {
             }
             .navigationBarTitle("Resorts")
             .navigationBarItems(
-                leading: Button(action: {
-                    self.showingFilterActionSheet = true
-                }){
-                    Image(systemName: "line.horizontal.3.decrease.circle")
-                },
+                leading: Menu {
+                    Menu(ResortFilter.size.description) {
+                        Button("Small", action: {
+                            self.filterType = .size
+                            self.filterValue = 1
+                        })
+                        Button("Average", action: {
+                            self.filterType = .size
+                            self.filterValue = 2
+                        })
+                        Button("Large", action: {
+                            self.filterType = .size
+                            self.filterValue = 3
+                        })
+                    }
+                    Menu(ResortFilter.price.description) {
+                        Button("$", action: {
+                            self.filterType = .price
+                            self.filterValue = 1
+                        })
+                        Button("$$", action: {
+                            self.filterType = .price
+                            self.filterValue = 2
+                        })
+                        Button("$$$", action: {
+                            self.filterType = .price
+                            self.filterValue = 3
+                        })
+                    }
+                    Button("Clear filter", action: {
+                        self.filterType = .none
+                    })
+                } label: { Label("filter", systemImage: "line.horizontal.3.decrease.circle")},
                 trailing: Button(action: {
                     self.showingSortActionSheet = true
                 }){
                     Image(systemName: "arrow.up.arrow.down.circle")
-                })
+                }
+            )
             .actionSheet(isPresented: $showingSortActionSheet, content: {
                 ActionSheet(title: Text("Change sort order"), message: Text("Select a sort order"), buttons: [
                     .default(Text(ResortSort.alphabetical.description)) { self.sort = ResortSort.alphabetical },
@@ -118,15 +157,6 @@ struct ContentView: View {
                     .cancel()
                 ])
             })
-//            .actionSheet(isPresented: $showingFilterActionSheet, content: {
-//                ActionSheet(title: Text("Change filter"), message: Text("Select a filter"), buttons: [
-//                    .default(Text(ResortFilter.country.description)) { self.filter = ResortFilter.country },
-//                    .default(Text(ResortFilter.price.description)) { self.filter = ResortFilter.price },
-//                    .default(Text(ResortFilter.size.description)) { self.filter = ResortFilter.size },
-//                    .default(Text(ResortFilter.none.description)) { self.filter = ResortFilter.none },
-//                    .cancel()
-//                ])
-//            })
             
             WelcomeView()
         }
