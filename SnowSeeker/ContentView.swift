@@ -7,44 +7,12 @@
 
 import SwiftUI
 
-enum ResortSort: CustomStringConvertible {
-    case alphabetical, country, standard
-    var description: String {
-        switch self {
-        case .alphabetical:
-            return "Alphabetical"
-        case .country:
-            return "Country"
-        default:
-            return "Default"
-        }
-    }
-}
-
-enum ResortFilter: CustomStringConvertible {
-    case country, price, size, none
-    var description: String {
-        switch self {
-        case .country:
-            return "Country"
-        case .price:
-            return "Price"
-        case .size:
-            return "Size"
-        default:
-            return "None"
-        }
-    }
-}
-
 struct ContentView: View {
     @ObservedObject var favourites = Favourites()
     @State private var sort: ResortSort = .standard
-    @State private var filterType: ResortFilter = .none
-    @State private var filterValue: Int = 0
+    @State private var filter = ResortFilter()
     
     @State private var showingSortActionSheet = false
-    @State private var showingFilterActionSheet = false
     
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     var filteredAndSortedResorts: [Resort] {
@@ -59,19 +27,9 @@ struct ContentView: View {
                 return true
             }
         })
-        if self.filterType != .none {
-            sortedAndFilteredResorts = sortedAndFilteredResorts.filter {
-                switch self.filterType {
-                case .size:
-                    return $0.size == self.filterValue
-                case .price:
-                    return $0.price == self.filterValue
-                default:
-                    return false
-                }
-            }
+        if self.filter.isSet() {
+            sortedAndFilteredResorts = self.filter.filter(resorts: sortedAndFilteredResorts)
         }
-        
         return sortedAndFilteredResorts
     }
     
@@ -111,38 +69,70 @@ struct ContentView: View {
             .navigationBarTitle("Resorts")
             .navigationBarItems(
                 leading: Menu {
-                    Menu(ResortFilter.size.description) {
-                        Button("Small", action: {
-                            self.filterType = .size
-                            self.filterValue = 1
+                    Menu(ResortFilter.type.size.description) {
+                        Button("Small", action : {
+                            self.filter.clear()
+                            self.filter.size = 1
                         })
                         Button("Average", action: {
-                            self.filterType = .size
-                            self.filterValue = 2
+                            self.filter.clear()
+                            self.filter.size = 2
                         })
                         Button("Large", action: {
-                            self.filterType = .size
-                            self.filterValue = 3
+                            self.filter.clear()
+                            self.filter.size = 3
                         })
                     }
-                    Menu(ResortFilter.price.description) {
+                    Menu(ResortFilter.type.price.description) {
                         Button("$", action: {
-                            self.filterType = .price
-                            self.filterValue = 1
+                            self.filter.clear()
+                            self.filter.price = 1
                         })
                         Button("$$", action: {
-                            self.filterType = .price
-                            self.filterValue = 2
+                            self.filter.clear()
+                            self.filter.price = 2
                         })
                         Button("$$$", action: {
-                            self.filterType = .price
-                            self.filterValue = 3
+                            self.filter.clear()
+                            self.filter.price = 3
                         })
                     }
+                    Menu(ResortFilter.type.country.description) {
+                        Button(action: {
+                            self.filter.clear()
+                            self.filter.country = "Austria"
+                        }) {
+                            Label("Austria", image: "Austria")
+                        }
+                        Button(action: {
+                            self.filter.clear()
+                            self.filter.country = "Canada"
+                        }) {
+                            Label("Canada", image: "Canada")
+                        }
+                        Button(action: {
+                            self.filter.clear()
+                            self.filter.country = "France"
+                        }) {
+                            Label("France", image: "France")
+                        }
+                        Button(action: {
+                            self.filter.clear()
+                            self.filter.country = "Italy"
+                        }) {
+                            Label("Italy", image: "Italy")
+                        }
+                        Button(action: {
+                            self.filter.clear()
+                            self.filter.country = "United States"
+                        }) {
+                            Label("United States", image: "United States")
+                        }
+                    }
                     Button("Clear filter", action: {
-                        self.filterType = .none
+                        self.filter.clear()
                     })
-                } label: { Label("filter", systemImage: "line.horizontal.3.decrease.circle")},
+                } label: { Label("", systemImage: "line.horizontal.3.decrease.circle")},
                 trailing: Button(action: {
                     self.showingSortActionSheet = true
                 }){
