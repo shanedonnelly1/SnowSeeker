@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct ResortFilter {
-    var country: String?
-    var price: Int?
-    var size: Int?
-    var logicalAnd = false
-    var type: type = .none
+class ResortFilter: ObservableObject {
+    @Published var country: String?
+    @Published var price: Int?
+    @Published var size: Int?
+    @Published var logicalAnd = false
+    @Published var type: type = .none
    
-    mutating func clear() {
+    func clear() {
         country = nil
         price = nil
         size = nil
