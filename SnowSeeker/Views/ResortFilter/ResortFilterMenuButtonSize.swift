@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ResortFilterMenuButtonSize: View {
-    let filter: ResortFilter
+    @ObservedObject var filter: ResortFilter
     let size: Int
     
     var sizeString: String {
@@ -23,11 +23,17 @@ struct ResortFilterMenuButtonSize: View {
     }
     
     var body: some View {
-        Button(sizeString, action: {
+        Button(action: {
             self.filter.clear()
             self.filter.size = size
-
-        })
+        }) {
+            if self.filter.size == self.size {
+                Label("\(sizeString)", image: "star.fill")
+                    
+            } else {
+                Text("\(sizeString)")
+            }
+        }
     }
 }
 

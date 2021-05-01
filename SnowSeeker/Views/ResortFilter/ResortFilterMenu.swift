@@ -8,30 +8,55 @@
 import SwiftUI
 
 struct ResortFilterMenu: View {
-    var filter: ResortFilter
+    @ObservedObject var filter: ResortFilter
     var body: some View {
         Menu {
-            Menu(ResortFilter.type.size.description) {
-                ResortFilterMenuButtonSize(filter: self.filter, size: 1)
-                ResortFilterMenuButtonSize(filter: self.filter, size: 2)
-                ResortFilterMenuButtonSize(filter: self.filter, size: 3)
+            Menu {
+                ResortFilterMenuButtonSize(filter: filter, size: 1)
+                ResortFilterMenuButtonSize(filter: filter, size: 2)
+                ResortFilterMenuButtonSize(filter: filter, size: 3)
+            } label: {
+                if filter.isSizeSet() {
+                    Label("\(ResortFilter.type.size.description)", systemImage: "star.fill")
+                } else {
+                    Text("\(ResortFilter.type.size.description)")
+                }
             }
-            Menu(ResortFilter.type.price.description) {
-                ResortFilterMenuButtonPrice(filter: self.filter, price: 1)
-                ResortFilterMenuButtonPrice(filter: self.filter, price: 2)
-                ResortFilterMenuButtonPrice(filter: self.filter, price: 3)
+            Menu {
+                ResortFilterMenuButtonPrice(filter: filter, price: 1)
+                ResortFilterMenuButtonPrice(filter: filter, price: 2)
+                ResortFilterMenuButtonPrice(filter: filter, price: 3)
+            } label: {
+                if filter.isPriceSet() {
+                    Label("\(ResortFilter.type.price.description)", systemImage: "star.fill")
+                } else {
+                    Text("\(ResortFilter.type.price.description)")
+                }
             }
-            Menu(ResortFilter.type.country.description) {
-                ResortFilterMenuButtonCountry(filter: self.filter, country: "Austria")
-                ResortFilterMenuButtonCountry(filter: self.filter, country: "Canada")
-                ResortFilterMenuButtonCountry(filter: self.filter, country: "France")
-                ResortFilterMenuButtonCountry(filter: self.filter, country: "Italy")
-                ResortFilterMenuButtonCountry(filter: self.filter, country: "United States")
+            Menu {
+                ResortFilterMenuButtonCountry(filter: filter, country: "Austria")
+                ResortFilterMenuButtonCountry(filter: filter, country: "Canada")
+                ResortFilterMenuButtonCountry(filter: filter, country: "France")
+                ResortFilterMenuButtonCountry(filter: filter, country: "Italy")
+                ResortFilterMenuButtonCountry(filter: filter, country: "United States")
+            } label: {
+                if filter.isCountrySet() {
+                    Label("\(ResortFilter.type.country.description)", systemImage: "star.fill")
+                } else {
+                    Text("\(ResortFilter.type.country.description)")
+                }
             }
             Button("Clear filter", action: {
-                self.filter.clear()
+                filter.clear()
             })
-        } label: { Label("", systemImage: "line.horizontal.3.decrease.circle")}
+        } label: {
+            if filter.isSet() {
+                Label("", systemImage: "line.horizontal.3.decrease.circle.fill")
+            } else {
+                Label("", systemImage: "line.horizontal.3.decrease.circle")
+                
+            }
+        }
     }
 }
 

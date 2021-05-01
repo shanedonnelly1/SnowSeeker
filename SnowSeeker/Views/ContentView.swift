@@ -18,7 +18,7 @@ struct ContentView: View {
     var filteredAndSortedResorts: [Resort] {
         var sortedAndFilteredResorts = resorts
         sortedAndFilteredResorts.sort(by: { (lhs, rhs) -> Bool in
-            switch self.sort {
+            switch sort {
             case .alphabetical:
                 return lhs.name < rhs.name
             case .country:
@@ -27,8 +27,8 @@ struct ContentView: View {
                 return true
             }
         })
-        if self.filter.isSet() {
-            sortedAndFilteredResorts = self.filter.filter(resorts: sortedAndFilteredResorts)
+        if filter.isSet() {
+            sortedAndFilteredResorts = filter.filter(resorts: sortedAndFilteredResorts)
         }
         return sortedAndFilteredResorts
     }

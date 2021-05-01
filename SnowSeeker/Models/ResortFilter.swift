@@ -22,7 +22,19 @@ class ResortFilter: ObservableObject {
     }
     
     func isSet() -> Bool {
-        return country != nil || price != nil || size != nil
+        return isCountrySet() || isPriceSet() || isSizeSet()
+    }
+    
+    func isCountrySet() -> Bool {
+        return country != nil
+    }
+    
+    func isPriceSet() -> Bool {
+        return price != nil
+    }
+    
+    func isSizeSet() -> Bool {
+        return size != nil
     }
     
     func filter(resorts: [Resort]) -> [Resort] {
