@@ -27,9 +27,9 @@ struct ResortFilterMenuButtonSize: View {
             self.filter.clear()
             self.filter.size = size
         }) {
+            
             if self.filter.size == self.size {
-                Label("\(sizeString)", image: "star.fill")
-                    
+                Label("\(sizeString)", systemImage: "star.fill")
             } else {
                 Text("\(sizeString)")
             }
