@@ -52,7 +52,7 @@ struct ResortFilterMenu: View {
             Menu(ResortFilter.type.country.description) {
                 Picker(selection: country, label: Text("Filter by price"), content: {
                     ForEach(countries, id: \.self) {
-                        Text("\($0)").tag("\($0)")
+                        Label("\($0)", image: "\($0)").tag("\($0)")
                     }
                     
                 })

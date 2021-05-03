@@ -35,37 +35,41 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List(filteredAndSortedResorts) { resort in
-                NavigationLink(destination: ResortView(resort: resort)) {
-                    Image(resort.country)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 40, height: 25)
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 5)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.black, lineWidth: 1)
-                        )
-                    
-                    VStack(alignment: .leading) {
-                        Text(resort.name)
-                            .font(.headline)
-                        
-                        Text("\(resort.runs) runs")
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    if self.favourites.contains(resort) {
-                        Spacer()
-                        Image(systemName: "heart.fill")
-                            .accessibility(label: Text("This is a favourite resort"))
-                            .foregroundColor(.red)
+            List {
+                Section(header: Text("Filter")) {
+                    ForEach(filteredAndSortedResorts) { resort in
+                        NavigationLink(destination: ResortView(resort: resort)) {
+                            Image(resort.country)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 40, height: 25)
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 5)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.black, lineWidth: 1)
+                                )
+                            
+                            VStack(alignment: .leading) {
+                                Text(resort.name)
+                                    .font(.headline)
+                                
+                                Text("\(resort.runs) runs")
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            if self.favourites.contains(resort) {
+                                Spacer()
+                                Image(systemName: "heart.fill")
+                                    .accessibility(label: Text("This is a favourite resort"))
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                 }
-                
             }
+            .listStyle(InsetGroupedListStyle())
             .navigationBarTitle("Resorts")
             .navigationBarItems(
                 leading: ResortFilterMenu(filter: filter),
