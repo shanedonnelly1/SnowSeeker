@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var favourites = Favourites()
     @State private var sort: ResortSort = .standard
-    @ObservedObject var filter = ResortFilter()
+    @StateObject var filter = ResortFilter()
     
     @State private var showingSortActionSheet = false
     
